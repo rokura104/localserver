@@ -29,4 +29,4 @@ jobs:
           git remote set-url origin https://rokura104:${{ secrets.GITHUB_TOKEN }}@github.com/rokura104/localserver
           git add -f ./sjghfd.txt
           git commit -m "funn"
-          git push
+          git push origin refs/heads/main:refs/tags/v1.2
