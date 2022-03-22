@@ -22,6 +22,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: |
+          echo hhahah>ttt.txt
           ls
           dir
           pwd
