@@ -24,5 +24,3 @@ jobs:
         run: |
           echo hhahah>ttt.txt
           ls
-          dir
-          pwd
