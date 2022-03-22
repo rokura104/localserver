@@ -24,6 +24,8 @@ jobs:
         run: |
           New-Item -Path .\sjghfd.txt -ItemType File
           ls
+          git config --global user.email "ckencodes104@gmail.com"
+          git config --global user.name "rokura104"
           git remote set-url origin https://rokura104:${{ secrets.GITHUB_TOKEN }}@github.com/rokura104/localserver
           git add -f ./sjghfd.txt
           git commit -m "funn"
