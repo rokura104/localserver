@@ -18,7 +18,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -30,10 +30,10 @@ jobs:
         run: git clone --recursive https://github.com/tdlib/telegram-bot-api.git
       # Runs a single command using the runners shell
       - name: Clonning
-        run: git clone --recursive https://github.com/tdlib/telegram-bot-api.git
+        run: cd telegram-bot-api && git clone https://github.com/Microsoft/vcpkg.git
       # Runs a single command using the runners shell
       - name: Clonning
-        run: git clone --recursive https://github.com/tdlib/telegram-bot-api.git
+        run: cd  telegram-bot-api/vcpkg && ./bootstrap-vcpkg.bat && ./vcpkg.exe install gperf:x64-windows openssl:x64-windows zlib:x64-windows
       # Runs a single command using the runners shell
       - name: Clonning
         run: git clone --recursive https://github.com/tdlib/telegram-bot-api.git
