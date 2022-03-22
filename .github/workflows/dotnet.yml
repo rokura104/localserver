@@ -20,3 +20,5 @@ jobs:
       run: dotnet build --no-restore
     - name: Run
       run: dotnet run 
+    - name: cmd
+      run: ls
