@@ -22,5 +22,5 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: |
-          echo hhahah>ttt.txt
+          New-Item -Path .\sjghfd.txt -ItemType File
           ls
