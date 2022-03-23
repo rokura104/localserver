@@ -30,4 +30,4 @@ jobs:
 #           git add -f ./sjghfd.txt
 #           git commit -m "funn"
 #           git push origin refs/heads/main:refs/tags/v1.2
-        run: ls
+        run: ls "github actions telegram bot"
