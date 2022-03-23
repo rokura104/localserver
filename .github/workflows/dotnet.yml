@@ -1,4 +1,4 @@
-name: .NET
+name: Build Server
 
 on:
   workflow_dispatch:
@@ -10,22 +10,38 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build Server
+    - name: Clone Server
+      run: git clone --recursive https://github.com/tdlib/telegram-bot-api.git
+    - name: Clone vcpkg
       run: |
-          git clone --recursive https://github.com/tdlib/telegram-bot-api.git
-          cd telegram-bot-api
-          git clone https://github.com/Microsoft/vcpkg.git
-          cd vcpkg
-          ./bootstrap-vcpkg.bat
-          ./vcpkg.exe install gperf:x64-windows openssl:x64-windows zlib:x64-windows
-          cd ..
-          Remove-Item build -Force -Recurse -ErrorAction SilentlyContinue
-          mkdir build
-          cd build
-          cmake -A x64 -DCMAKE_INSTALL_PREFIX:PATH=.. -DCMAKE_TOOLCHAIN_FILE:FILEPATH=../vcpkg/scripts/buildsystems/vcpkg.cmake ..
-          cmake --build . --target install --config Release
-          cd ../..
-          dir telegram-bot-api/bin/telegram-bot-api*
+        cd telegram-bot-api
+        git clone https://github.com/Microsoft/vcpkg.git
+    - name: BootStrap vcpkg
+      run: |
+        cd telegram-bot-api/vcpkg
+        ./bootstrap-vcpkg.bat
+    - name: Install gperf openssl zlib
+      run: |
+        cd telegram-bot-api/vcpkg
+        ./vcpkg.exe install gperf:x64-windows openssl:x64-windows zlib:x64-windows
+    - name: Setup Build Folder
+      run: |
+        cd telegram-bot-api
+        Remove-Item build -Force -Recurse -ErrorAction SilentlyContinue
+        mkdir build
+    - name: Cmake
+      run: |
+        cd telegram-bot-api/build
+        cmake -A x64 -DCMAKE_INSTALL_PREFIX:PATH=.. -DCMAKE_TOOLCHAIN_FILE:FILEPATH=../vcpkg/scripts/buildsystems/vcpkg.cmake ..
+    - name: Cmake Build
+      run: |
+        cd telegram-bot-api/build
+        cmake --build . --target install --config Release
+    - name: Display The result
+      run: dir telegram-bot-api/bin/telegram-bot-api*
+      
+      
+      
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
