@@ -15,10 +15,10 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore "./github actions telegram bot/github actions telegram bot.csproj"
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore  "./github actions telegram bot/github actions telegram bot.csproj"
     - name: Run
-      run: dotnet run 
+      run: dotnet run  "./github actions telegram bot/github actions telegram bot.csproj"
     - name: cmd
       run: ls
