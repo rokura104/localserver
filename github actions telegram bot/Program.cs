@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Extensions.Polling;
@@ -13,12 +13,6 @@ await botClient.ReceiveAsync(
     new ReceiverOptions { AllowedUpdates = new UpdateType[] {UpdateType.Message, UpdateType.CallbackQuery}}
 );
 
-var powershell = new powerShellProc("echo hello");
-
-
-string output = powershell.Run();
-System.Console.WriteLine(output);
-
 async Task HandleErrorAsync(ITelegramBotClient arg1, Exception arg2, CancellationToken arg3)
 {
     await Task.CompletedTask;
@@ -26,27 +20,55 @@ async Task HandleErrorAsync(ITelegramBotClient arg1, Exception arg2, Cancellatio
 
 async Task HandleUpdateAsync(ITelegramBotClient arg1, Update update, CancellationToken arg3)
 {
-    if (update.Message is Message message)
-        if (message.Text is string text && message.From!.Username == "RobCK")
+    if (update.Message is Message message
+        && message.Text is string text
+        && message.From!.Username == "RobCK")
         {
-            // switch (text.Split().First())
-            // {
-            //     case "/cmd":
-            //     break;
-            //     default:
-            // }
-            var proc = new powerShellProc(text);
-            var outp = proc.Run();
-            using (var stream1 = new MemoryStream(
-                    buffer: new UnicodeEncoding().GetBytes(outp)
-                )
-            )
-            await botClient.SendDocumentAsync(
-                message.Chat.Id,
-                new Telegram.Bot.Types.InputFiles.InputOnlineFile
-                (stream1, "output.txt"),
-                replyToMessageId: message.MessageId
-            );
+            switch (text)
+            {
+                case "/pws":
+                    if (message.ReplyToMessage is Message replyToMessage
+                        && replyToMessage.Text is string replyText)
+                    {
+                        var powershell = new powerShellProc(replyText);
+                        string output = powershell.Run();
+                        if (output.Length < 2000)
+                            await botClient.SendTextMessageAsync(message.Chat.Id, output, replyToMessageId: message.MessageId);
+                        else
+                            using (var stream1 = new MemoryStream(buffer: new UnicodeEncoding().GetBytes(output)))
+                                await botClient.SendDocumentAsync(
+                                    message.Chat.Id,
+                                    new Telegram.Bot.Types.InputFiles.InputOnlineFile
+                                    (stream1, "output.txt"),
+                                    replyToMessageId: message.MessageId
+                                );
+                    }
+                    else
+                        await botClient.SendTextMessageAsync(message.Chat.Id, "Reply needed");
+                    break;
+                case "/dl":
+                    if (message.ReplyToMessage is Message replyToMessaged
+                            && replyToMessaged.Text is string replyTextpath)
+                    {
+                        if (System.IO.File.Exists(replyTextpath))
+                        {
+                            using var sr = new StreamReader(replyTextpath);
+                            await botClient.SendDocumentAsync(
+                                    message.Chat.Id,
+                                    new Telegram.Bot.Types.InputFiles.InputOnlineFile
+                                    (sr.BaseStream, Path.GetFileName(replyTextpath)),
+                                    replyToMessageId: message.MessageId
+                                );
+                        }
+                        else
+                            await botClient.SendTextMessageAsync(message.Chat.Id, "File does not exist", replyToMessageId: replyToMessaged.MessageId);
+                    }
+                    else
+                        await botClient.SendTextMessageAsync(message.Chat.Id, "Reply needed");
+                    break;
+                default:
+                    break;
+            }
         }
 
 }
