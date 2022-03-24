@@ -1,4 +1,4 @@
-name: Build Server
+name: Build Telegram-Bot-Api Local Server (Windows)
 
 on:
   workflow_dispatch:
