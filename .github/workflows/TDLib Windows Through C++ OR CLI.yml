@@ -32,13 +32,21 @@ jobs:
     - name: Cmake
       run: |
         cd td/build
-        cmake -A x64 -DCMAKE_INSTALL_PREFIX:PATH=../tdlib -DCMAKE_TOOLCHAIN_FILE:FILEPATH=../vcpkg/scripts/buildsystems/vcpkg.cmake ..
-    - name: Cmake Build
+        cmake -A x64 -DCMAKE_INSTALL_PREFIX:PATH=../tdlib -DTD_ENABLE_DOTNET=ON -DCMAKE_TOOLCHAIN_FILE:FILEPATH=../vcpkg/scripts/buildsystems/vcpkg.cmake ..
+    - name: Cmake Build Release
       run: |
         cd td/build
         cmake --build . --target install --config Release
+    - name: Cmake Build Debug
+      run: |
+        cd td/build
+        cmake --build . --target install --config Debug
+    - name: Git Checkout
+      run: |
+        cd td
+        git checkout td/telegram/Client.h td/telegram/Log.h td/tl/TlObject.h
     - name: Display The result
-      run: dir td/tdlib
+      run: dir td/tdlib /S
       
       
       
