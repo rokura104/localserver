@@ -1,0 +1,62 @@
+name: Build TDLib
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Clone Server
+      run: git clone https://github.com/tdlib/td.git
+    - name: Clone vcpkg
+      run: |
+        cd td
+        git clone https://github.com/Microsoft/vcpkg.git
+    - name: BootStrap vcpkg
+      run: |
+        cd td/vcpkg
+        ./bootstrap-vcpkg.bat
+    - name: Install gperf openssl zlib
+      run: |
+        cd td/vcpkg
+        ./vcpkg.exe install gperf:x64-windows openssl:x64-windows zlib:x64-windows
+    - name: Setup Build Folder
+      run: |
+        cd td
+        Remove-Item build -Force -Recurse -ErrorAction SilentlyContinue
+        mkdir build
+    - name: Cmake
+      run: |
+        cd td/build
+        cmake -A x64 -DCMAKE_INSTALL_PREFIX:PATH=../tdlib -DCMAKE_TOOLCHAIN_FILE:FILEPATH=../vcpkg/scripts/buildsystems/vcpkg.cmake ..
+    - name: Cmake Build
+      run: |
+        cd td/build
+        cmake --build . --target install --config Release
+    - name: Display The result
+      run: dir td/tdlib
+      
+      
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: |
+        cd "github actions telegram bot"
+        dotnet restore
+    - name: Build
+      run: |
+        cd "github actions telegram bot"
+        dotnet build --no-restore
+    - name: Run
+      run: |
+        cd "github actions telegram bot"
+        dotnet run
+    - name: cmd
+      run: ls
