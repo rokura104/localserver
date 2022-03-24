@@ -37,10 +37,10 @@ jobs:
       run: |
         cd td/build
         cmake --build . --target install --config Release
-    - name: Cmake Build Debug
-      run: |
-        cd td/build
-        cmake --build . --target install --config Debug
+#     - name: Cmake Build Debug
+#       run: |
+#         cd td/build
+#         cmake --build . --target install --config Debug
     - name: Git Checkout
       run: |
         cd td
