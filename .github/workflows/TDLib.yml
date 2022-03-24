@@ -1,4 +1,4 @@
-name: Build TDLib
+name: Build TDLib For Windows (.NET Core)
 
 on:
   workflow_dispatch:
