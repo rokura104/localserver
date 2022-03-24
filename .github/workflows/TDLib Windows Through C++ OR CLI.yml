@@ -46,7 +46,7 @@ jobs:
         cd td
         git checkout td/telegram/Client.h td/telegram/Log.h td/tl/TlObject.h
     - name: Display The result
-      run: dir td/tdlib /S
+      run: Get-ChildItem -Recurse -Path .\td\tdlib
       
       
       
